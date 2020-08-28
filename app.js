@@ -27,7 +27,11 @@ document
     const ul = document.createElement("ul");
     peer.listAllPeers((peers) => {
       peers
+
         .filter((p) => p !== myPeerId)
+        .map((nm) => {
+          return "(" + nm + ")";
+        })
         .forEach((peerId) => {
           const li = document.createElement("li");
           const button = document.createElement("button");
