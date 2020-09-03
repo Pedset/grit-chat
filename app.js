@@ -34,10 +34,12 @@
 
     function x() {
       const message = document.querySelector(".new-message").value;
-      console.log("This is from peerOnConnection message" + message);
-      conn.send(message);
-      printMessage(message, "them");
-      document.querySelector(".new-message").value = "";
+      if (message !== "") {
+        console.log("This is from peerOnConnection message" + message);
+        conn.send(message);
+        printMessage(message, "them");
+        document.querySelector(".new-message").value = "";
+      }
     }
 
     const sendButton = document.querySelector(".send-new-message-button");
