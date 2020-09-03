@@ -16,7 +16,7 @@
       }
       return i;
     }
-    if (writer === "me") {
+    if (writer === "them") {
       newMessageDiv.innerText = "(" + h + ":" + m + ":" + s + ") " + message;
     } else {
       newMessageDiv.innerText = message + "(" + h + ":" + m + ":" + s + ") ";
