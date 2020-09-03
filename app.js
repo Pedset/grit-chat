@@ -32,33 +32,34 @@
       printMessage(data, "me");
     });
 
-    function x() {
-      const message = document.querySelector(".new-message").value;
-      console.log("MESSAGE IS:" + message);
-      if (message !== "") {
-        console.log("This is from peerOnConnection message:" + message);
-        conn.send(message);
-        printMessage(message, "them");
-        document.querySelector(".new-message").value = "";
-      }
-    }
-
-    const sendButton = document.querySelector(".send-new-message-button");
-    sendButton.addEventListener("click", () => {
-      x();
-    });
-    document.querySelector("body").addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        x();
-      }
-    });
-
     console.log(conn);
     const eventx = new CustomEvent("peer-changed", {
       detail: { peerId: conn.peer },
     });
     document.dispatchEvent(eventx);
   };
+
+  function x() {
+    const message = document.querySelector(".new-message").value;
+    console.log("MESSAGE IS:" + message);
+    if (message !== "") {
+      console.log("This is from peerOnConnection message:" + message);
+      conn.send(message);
+      printMessage(message, "them");
+      document.querySelector(".new-message").value = "";
+    }
+  }
+
+  const sendButton = document.querySelector(".send-new-message-button");
+  sendButton.addEventListener("click", () => {
+    x();
+  });
+
+  document.querySelector("body").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      x();
+    }
+  });
 
   const peerOnError = (error) => {
     console.log(error);
