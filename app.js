@@ -34,8 +34,9 @@
 
     function x() {
       const message = document.querySelector(".new-message").value;
+      console.log("MESSAGE IS:" + message);
       if (message !== "") {
-        console.log("This is from peerOnConnection message" + message);
+        console.log("This is from peerOnConnection message:" + message);
         conn.send(message);
         printMessage(message, "them");
         document.querySelector(".new-message").value = "";
