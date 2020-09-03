@@ -4,7 +4,19 @@
     const messagesDiv = document.querySelector(".messages");
     const newMessageDiv = document.createElement("div");
     const messageWrapperDiv = document.createElement("div");
-    newMessageDiv.innerHTML = message;
+    var today = new Date();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    function checkTime(i) {
+      if (i < 10) {
+        i = "0" + i;
+      }
+      return i;
+    }
+    newMessageDiv.innerText = "(" + h + ":" + m + ":" + s + ") " + message;
     messageWrapperDiv.classList.add("message");
     messageWrapperDiv.classList.add(writer);
     messageWrapperDiv.appendChild(newMessageDiv);
@@ -29,6 +41,7 @@
     conn = dataConnection;
     conn.on("data", (data) => {
       console.log("This is from peerOnConnection data:" + data);
+
       printMessage(data, "me");
     });
 
