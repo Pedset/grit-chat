@@ -1,6 +1,5 @@
 (function () {
   function printMessage(message, writer) {
-    console.log(message);
     const messagesDiv = document.querySelector(".messages");
     const newMessageDiv = document.createElement("div");
     const messageWrapperDiv = document.createElement("div");
@@ -51,18 +50,15 @@
       printMessage(data, "me");
     });
 
-    console.log(conn);
-    const eventx = new CustomEvent("peer-changed", {
+    const peerChangeEvent = new CustomEvent("peer-changed", {
       detail: { peerId: conn.peer },
     });
-    document.dispatchEvent(eventx);
+    document.dispatchEvent(peerChangeEvent);
   };
 
-  function x() {
+  function sendMesssage() {
     const message = document.querySelector(".new-message").value;
-    console.log("MESSAGE IS:" + message);
     if (message !== "") {
-      console.log("This is from peerOnConnection message:" + message);
       conn.send(message);
       printMessage(message, "them");
       document.querySelector(".new-message").value = "";
@@ -71,12 +67,12 @@
 
   const sendButton = document.querySelector(".send-new-message-button");
   sendButton.addEventListener("click", () => {
-    x();
+    sendMesssage();
   });
 
-  document.querySelector("body").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      x();
+  document.querySelector("body").addEventListener("keypress", (event) => {
+    if (event.key === "Enter") {
+      sendMesssage();
     }
   });
 
@@ -85,8 +81,10 @@
   };
 
   const connectToPeerClick = (el) => {
-    const peerId = el.target.textContent.replace(/-/g, "");
-    console.log(peerId);
+    const peerId = el.target.textContent.slice(
+      1,
+      el.target.textContent.length - 1
+    );
 
     if (conn !== null) {
       conn.close();
@@ -97,16 +95,13 @@
         connected_button.classList.remove("connected");
       }
     }
-
-    //conn && conn.close();
-
     conn = peer.connect(peerId);
     conn.on("open", () => {
       console.log("connection open");
-      const event = new CustomEvent("peer-changed", {
+      const event_Peer_changed = new CustomEvent("peer-changed", {
         detail: { peerId: peerId },
       });
-      document.dispatchEvent(event);
+      document.dispatchEvent(event_Peer_changed);
       conn.on("data", (data) => {
         console.log("this is from ConnectToPeerClick data:" + data);
         printMessage(data, "me");
