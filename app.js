@@ -36,9 +36,11 @@
   const peerOnConnection = (dataConnection) => {
     if (conn !== null) {
       conn.close();
-      let xxss = document.querySelector(".connect-button.connected");
-      if (xxss !== null) {
-        xxss.classList.remove("connected");
+      let connected_button = document.querySelector(
+        ".connect-button.connected"
+      );
+      if (connected_button !== null) {
+        connected_button.classList.remove("connected");
       }
     }
 
@@ -88,9 +90,11 @@
 
     if (conn !== null) {
       conn.close();
-      let xxs = document.querySelector(".connect-button.connected");
-      if (xxs !== null) {
-        xxs.classList.remove("connected");
+      let connected_button = document.querySelector(
+        ".connect-button.connected"
+      );
+      if (connected_button !== null) {
+        connected_button.classList.remove("connected");
       }
     }
 
@@ -165,8 +169,8 @@
       document.addEventListener("peer-changed", (e) => {
         const peerId = e.detail.peerId;
         console.log("peerID peerchanged event" + peerId);
-        let xy = document.querySelector(`.peerId--${peerId}-`);
-        xy.classList.add("connected");
+        let peerIdClass = document.querySelector(`.peerId--${peerId}-`);
+        peerIdClass.classList.add("connected");
       });
     });
 })();
