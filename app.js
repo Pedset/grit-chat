@@ -1,4 +1,8 @@
 (function () {
+  let peer = null;
+  let conn = null;
+  let mediaConn = null;
+
   function printMessage(message, writer) {
     const messagesDiv = document.querySelector(".messages");
     const newMessageDiv = document.createElement("div");
@@ -24,10 +28,25 @@
     messageWrapperDiv.classList.add(writer);
     messageWrapperDiv.appendChild(newMessageDiv);
     messagesDiv.appendChild(messageWrapperDiv);
+    messagesDiv.scrollTo(0, messagesDiv.scrollHeight);
   }
 
-  let peer = null;
-  let conn = null;
+  //on peer event call
+
+  const peerOnCall = (incomingCall) => {
+    if (confirm("answer Call from " + incomingCall.peer)) {
+      mediaConn && mediaConn.close();
+      // answer incoming call.
+      navigator.mediaDevices
+        .getUserMedia({ audio: true, video: true })
+        .then((myStream) => {
+          mediaConn = incomingCall;
+          incomingCall.answer(myStream);
+          mediaConn.on("stream", mediaConnOnStream);
+        });
+    }
+  };
+
   const peerOnOpen = (id) => {
     document.querySelector(".my-peer-id").innerHTML = id;
   };
@@ -70,7 +89,7 @@
     sendMesssage();
   });
 
-  document.querySelector("body").addEventListener("keypress", (event) => {
+  document.querySelector("body").addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
       sendMesssage();
     }
@@ -87,7 +106,7 @@
     );
 
     if (conn !== null) {
-      conn.close();
+      conn && conn.close();
       let connected_button = document.querySelector(
         ".connect-button.connected"
       );
@@ -134,6 +153,56 @@
   peer.on("open", peerOnOpen);
   peer.on("error", peerOnError);
   peer.on("connection", peerOnConnection);
+  peer.on("call", peerOnCall);
+
+  //display video of me
+  navigator.mediaDevices
+    .getUserMedia({ audio: false, video: true })
+    .then((stream) => {
+      const video = document.querySelector(".video-container.me video");
+      video.muted = true;
+      video.srcObject = stream;
+    });
+
+  const mediaConnOnStream = (theirStream) => {
+    const video = document.querySelector(".video-container.them video");
+    video.muted = true;
+    video.srcObject = theirStream;
+  };
+  // stop video handler
+
+  const stopVideoCallClick = () => {
+    const video = document.querySelector(".video-container.them");
+    const startBtn = video.querySelector(".start");
+    const stopBtn = video.querySelector(".stop");
+    stopBtn.classList.remove("active");
+    startBtn.classList.add("active");
+  };
+  document
+    .querySelector(".video-container.them .stop")
+    .addEventListener("click", stopVideoCallClick);
+  // start video click handler
+
+  const startVideoCallClick = () => {
+    const video = document.querySelector(".video-container.them");
+    const startBtn = video.querySelector(".start");
+    const stopBtn = video.querySelector(".stop");
+    startBtn.classList.remove("active");
+    stopBtn.classList.add("active");
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true, video: true })
+      .then((myStream) => {
+        mediaConn && mediaConn.close();
+        mediaConn = peer.call(conn.peer, myStream);
+        mediaConn.on("stream", mediaConnOnStream);
+      });
+  };
+
+  //start video click handler
+  document
+    .querySelector(".video-container.them .start")
+    .addEventListener("click", startVideoCallClick);
 
   document
     .querySelector(".list-all-peers-button")
@@ -166,6 +235,14 @@
         console.log("peerID peerchanged event" + peerId);
         let peerIdClass = document.querySelector(`.peerId--${peerId}-`);
         peerIdClass.classList.add("connected");
+
+        //update video subtext
+        const video = document.querySelector(".video-container.them");
+        video.querySelector(".name").innerHTML =
+          'Connected to "' + peerId + '"';
+        video.classList.add("connected");
+        video.querySelector(".stop").classList.remove("active");
+        video.querySelector(".start").classList.add("active");
       });
     });
 })();
