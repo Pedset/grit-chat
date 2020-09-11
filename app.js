@@ -43,6 +43,11 @@
           mediaConn = incomingCall;
           incomingCall.answer(myStream);
           mediaConn.on("stream", mediaConnOnStream);
+          const video = document.querySelector(".video-container.them");
+          const startBtn = video.querySelector(".start");
+          const stopBtn = video.querySelector(".stop");
+          startBtn.classList.remove("active");
+          stopBtn.classList.add("active");
         });
     }
   };
