@@ -177,6 +177,7 @@
     const stopBtn = video.querySelector(".stop");
     stopBtn.classList.remove("active");
     startBtn.classList.add("active");
+    mediaConn.close();
   };
   document
     .querySelector(".video-container.them .stop")
